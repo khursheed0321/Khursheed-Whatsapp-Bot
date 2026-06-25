@@ -1,100 +1,79 @@
-const {
-  default: makeWASocket,
-  useMultiFileAuthState
-} = require("@whiskeysockets/baileys");
+const express = require("express");
 
-async function startBot() {
-  const { state, saveCreds } = await useMultiFileAuthState("session");
+const app = express();
+const PORT = process.env.PORT || 3000;
 
-  const sock = makeWASocket({
-    auth: state
-  });
-
-  sock.ev.on("creds.update", saveCreds);
-
-  // Welcome & Goodbye
-  sock.ev.on("group-participants.update", async (data) => {
-    try {
-      if (data.action === "add") {
-        await sock.sendMessage(data.id, {
-          text: "👋 Welcome to the group!"
-        });
+app.get("/", (req, res) => {
+  res.send(`
+  <!DOCTYPE html>
+  <html>
+  <head>
+    <title>Khursheed Bot Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+      body{
+        margin:0;
+        background:#111;
+        color:#fff;
+        font-family:Arial,sans-serif;
       }
 
-      if (data.action === "remove") {
-        await sock.sendMessage(data.id, {
-          text: "😔 Goodbye!"
-        });
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  });
-
-  // Messages
-  sock.ev.on("messages.upsert", async ({ messages }) => {
-    try {
-      const msg = messages[0];
-      if (!msg.message) return;
-
-      const from = msg.key.remoteJid;
-
-      const text =
-        msg.message.conversation ||
-        msg.message.extendedTextMessage?.text ||
-        "";
-
-      // Auto Reaction
-      await sock.sendMessage(from, {
-        react: {
-          text: "❤️",
-          key: msg.key
-        }
-      });
-
-      // Hi
-      if (text.toLowerCase() === "hi") {
-        await sock.sendMessage(from, {
-          text: "👋 Assalam-o-Alaikum! Welcome to Khursheed Bot."
-        });
+      .container{
+        max-width:900px;
+        margin:auto;
+        padding:20px;
       }
 
-      // Menu
-      if (text === "!menu") {
-        await sock.sendMessage(from, {
-          text: `🤖 KHURSHEED BOT
-
-📋 Commands
-
-!menu
-!ping
-owner`
-        });
+      h1{
+        text-align:center;
       }
 
-      // Ping
-      if (text === "!ping") {
-        await sock.sendMessage(from, {
-          text: "🏓 Pong!"
-        });
+      .card{
+        background:#1e1e1e;
+        padding:20px;
+        border-radius:12px;
+        margin-top:15px;
       }
 
-      // Owner
-      if (text.toLowerCase() === "owner") {
-        await sock.sendMessage(from, {
-          text: "👑 Owner: Khursheed"
-        });
+      .online{
+        color:lime;
       }
-    } catch (err) {
-      console.log(err);
-    }
-  });
 
-  sock.ev.on("connection.update", ({ connection }) => {
-    if (connection === "open") {
-      console.log("✅ Bot Connected");
-    }
-  });
-}
+      button{
+        padding:10px 20px;
+        border:none;
+        border-radius:8px;
+        cursor:pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>🤖 Khursheed Bot Dashboard</h1>
 
-startBot();
+      <div class="card">
+        <h2>Status</h2>
+        <p class="online">🟢 Online</p>
+      </div>
+
+      <div class="card">
+        <h2>Features</h2>
+        <p>✅ Auto Reply</p>
+        <p>✅ Auto Reaction</p>
+        <p>✅ Welcome Message</p>
+        <p>✅ Group Commands</p>
+      </div>
+
+      <div class="card">
+        <h2>Owner</h2>
+        <p>Khursheed</p>
+      </div>
+    </div>
+  </body>
+  </html>
+  `);
+});
+
+app.listen(PORT, () => {
+  console.log("Dashboard Running On Port " + PORT);
+});
