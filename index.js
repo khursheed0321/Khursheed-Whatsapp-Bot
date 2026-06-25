@@ -1,4 +1,23 @@
 const express = require("express");
+const app = express();
+
+const PORT = process.env.PORT || 3000;
+
+app.get("/", (req, res) => {
+  res.send(`
+    <h1>🤖 Khursheed Bot Dashboard</h1>
+    <p>Status: Online ✅</p>
+  `);
+});
+
+app.listen(PORT, () => {
+  console.log("Dashboard running on port " + PORT);
+});
+
+const {
+  default: makeWASocket,
+  useMultiFileAuthState
+} = require("@whiskeysockets/baileys");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
