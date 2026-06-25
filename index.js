@@ -15,10 +15,6 @@ app.listen(PORT, () => {
 });
 
 const {
-  default: makeWASocket,
-  useMultiFileAuthState
-} = require("@whiskeysockets/baileys");
-
 const app = express();
 const PORT = process.env.PORT || 3000;
 
