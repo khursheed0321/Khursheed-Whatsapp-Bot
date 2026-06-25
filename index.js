@@ -1,85 +1,74 @@
 const {
-default: makeWASocket,
-useMultiFileAuthState
+  default: makeWASocket,
+  useMultiFileAuthState
 } = require("@whiskeysockets/baileys");
 
 async function startBot() {
-const { state, saveCreds } = await useMultiFileAuthState("session");
+  const { state, saveCreds } = await useMultiFileAuthState("session");
 
-const sock = makeWASocket({
-auth: state
-});
-
-sock.ev.on("creds.update", saveCreds);
-
-sock.ev.on("messages.upsert", async ({ messages }) => {
-const msg = messages[0];
-if (!msg.message) return;
-
-const from = msg.key.remoteJid;
-const text =
-  msg.message.conversation ||
-  msg.message.extendedTextMessage?.text ||
-  "";
-
-await sock.sendMessage(from, {
-  react: {
-    text: "❤️",
-    key: msg.key
-  }
-});
-
-if (text.toLowerCase() === "hi") {
-  await sock.sendMessage(from, {
-    text: "👋 Assalam-o-Alaikum! Welcome to Khursheed Bot."
+  const sock = makeWASocket({
+    auth: state
   });
-}
 
-if (text === "!menu") {
-  await sock.sendMessage(from, {
-    text: "🤖 KHURSHEED BOT\n\n!menu\n!ping\nowner"
+  sock.ev.on("creds.update", saveCreds);
+
+  sock.ev.on("messages.upsert", async ({ messages }) => {
+    const msg = messages[0];
+    if (!msg.message) return;
+
+    const from = msg.key.remoteJid;
+    const text =
+      msg.message.conversation ||
+      msg.message.extendedTextMessage?.text ||
+      "";
+
+    // Auto Reaction
+    await sock.sendMessage(from, {
+      react: {
+        text: "❤️",
+        key: msg.key
+      }
+    });
+
+    // Welcome Reply
+    if (text.toLowerCase() === "hi") {
+      await sock.sendMessage(from, {
+        text: "👋 Assalam-o-Alaikum! Welcome to Khursheed Bot."
+      });
+    }
+
+    // Menu
+    if (text === "!menu") {
+      await sock.sendMessage(from, {
+        text:
+`🤖 KHURSHEED BOT
+
+!menu
+!ping
+owner`
+      });
+    }
+
+    // Ping
+    if (text === "!ping") {
+      await sock.sendMessage(from, {
+        text: "🏓 Pong!"
+      });
+    }
+
+    // Owner
+    if (text.toLowerCase() === "owner") {
+      await sock.sendMessage(from, {
+        text: "👑 Owner: Khursheed"
+      });
+    }
   });
-}
 
-if (text === "!ping") {
-  await sock.sendMessage(from, {
-    text: "🏓 Pong!"
+  sock.ev.on("connection.update", ({ connection }) => {
+    if (connection === "open") {
+      console.log("✅ Bot Connected");
+    }
   });
-}
-
-  }
-
-if (text.toLowerCase() === "owner") {
-  await sock.sendMessage(from, {
-    text: "👑 Owner: Khursheed"
-  });
-}
-
-});
-
-sock.ev.on("connection.update", ({ connection }) => {
-  if (connection === "open") {
-    console.log("✅ Bot Connected");
-  }
-});
-
-}
-
-startBot();
-
-if (text.toLowerCase() === "owner") {
-  await sock.sendMessage(from, {
-    text: "👑 Owner: Khursheed"
-  });
-}
-
-});
-
-sock.ev.on("connection.update", ({ connection }) => {
-if (connection === "open") {
-console.log("✅ Bot Connected");
-}
-});
 }
 
 startBot();
