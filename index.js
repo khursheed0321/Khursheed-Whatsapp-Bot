@@ -47,6 +47,26 @@ if (text === "!ping") {
   });
 }
 
+  }
+
+if (text.toLowerCase() === "owner") {
+  await sock.sendMessage(from, {
+    text: "👑 Owner: Khursheed"
+  });
+}
+
+});
+
+sock.ev.on("connection.update", ({ connection }) => {
+  if (connection === "open") {
+    console.log("✅ Bot Connected");
+  }
+});
+
+}
+
+startBot();
+
 if (text.toLowerCase() === "owner") {
   await sock.sendMessage(from, {
     text: "👑 Owner: Khursheed"
