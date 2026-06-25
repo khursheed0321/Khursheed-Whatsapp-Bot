@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Khursheed Bot Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>🤖 Khursheed Bot Dashboard</h1>
+
+    <div class="card">
+      <h2>Bot Status</h2>
+      <p id="status">Online</p>
+    </div>
+
+    <div class="card">
+      <h2>Features</h2>
+      <ul>
+        <li>Auto Reply</li>
+        <li>Welcome Message</li>
+        <li>Tag All</li>
+        <li>Anti-Link</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>Connect Bot</h2>
+      <input type="text" placeholder="Phone Number">
+      <button onclick="connectBot()">Connect</button>
+      <p id="result"></p>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
